@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>A Surprise for Raunak 🎁</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+background:radial-gradient(circle at 50% 20%,#4b176c,#14051f 55%,#05030a);
+color:white;text-align:center;overflow:hidden}
+canvas{position:fixed;inset:0;pointer-events:none;z-index:20}
+.screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px}
+.hidden{display:none!important}
+.intro{animation:fade .8s ease}
+.intro h1{font-size:clamp(30px,8vw,62px);margin:0 0 12px}
+.intro p{font-size:20px;opacity:.85}
+.gift{font-size:130px;border:0;background:none;cursor:pointer;
+filter:drop-shadow(0 0 25px #ff65c8);animation:gift 1.2s infinite alternate}
+.gift:hover{transform:scale(1.08)}
+.hint{font-size:15px;opacity:.65}
+.main{position:relative;overflow:auto;height:100vh;padding:35px 16px 70px}
+.card{max-width:760px;margin:0 auto;padding:28px 20px 35px;border-radius:30px;
+background:#ffffff12;border:1px solid #ffffff25;backdrop-filter:blur(12px);
+box-shadow:0 20px 80px #0009}
+h2{font-size:clamp(42px,11vw,82px);margin:0;
+background:linear-gradient(90deg,#ffd86b,#fff,#ff76c8,#ffd86b);
+-webkit-background-clip:text;background-clip:text;color:transparent;animation:glow 2s infinite alternate}
+.name{font-size:clamp(54px,15vw,105px);font-weight:900;text-shadow:0 0 12px #ff4db8,0 0 35px #ff4db8;animation:pulse 1.7s infinite}
+.subtitle{font-size:22px}.cake{font-size:100px;animation:bounce 1s infinite alternate}
+.message{font-size:19px;line-height:1.7;margin:20px auto;max-width:650px}
+button{border:0;border-radius:999px;padding:14px 25px;margin:7px;font-size:17px;font-weight:800;
+cursor:pointer;background:linear-gradient(90deg,#ffd86b,#ff8bd7);color:#32104f;box-shadow:0 0 25px #ff75c888}
+.balloons{position:fixed;inset:0;pointer-events:none;z-index:1}
+.balloon{position:absolute;font-size:58px;animation:float 5s ease-in-out infinite}
+.a{left:4%;top:25%}.b{right:5%;top:20%;animation-delay:1s}.c{left:8%;bottom:12%;animation-delay:2s}.d{right:9%;bottom:14%;animation-delay:3s}
+@keyframes gift{to{transform:translateY(-14px) rotate(4deg)}}
+@keyframes bounce{to{transform:translateY(-12px) rotate(2deg)}}
+@keyframes pulse{50%{transform:scale(1.03)}}
+@keyframes glow{to{filter:drop-shadow(0 0 18px #ff72c8)}}
+@keyframes float{50%{transform:translateY(-30px) rotate(6deg)}}
+@keyframes fade{from{opacity:0;transform:scale(.92)}to{opacity:1;transform:scale(1)}}
+</style>
+</head>
+<body>
+<canvas id="fx"></canvas>
+<audio id="birthdayAudio" src="birthday-song.mp3" preload="auto"></audio>
+
+<section id="intro" class="screen intro">
+  <div>
+    <div style="font-size:24px">🤫✨</div>
+    <h1>Raunak, you have a surprise! 🎁</h1>
+    <p>Someone prepared something special just for you...</p>
+    <button class="gift" onclick="openGift()" aria-label="Open gift">🎁</button>
+    <div class="hint">Tap the gift to open it 👆</div>
+  </div>
+</section>
+
+<section id="main" class="main hidden">
+  <div class="balloons">
+    <div class="balloon a">🎈</div><div class="balloon b">🎈</div>
+    <div class="balloon c">🎈</div><div class="balloon d">🎈</div>
+  </div>
+  <div class="card">
+    <div style="font-size:28px">🎉 ✨ 🎉</div>
+    <h2>Happy Birthday</h2>
+    <div class="name">RAUNAK!</div>
+    <div class="subtitle">Today is all about YOU ❤️</div>
+    <div class="cake">🎂</div>
+    <div class="message">
+      May your life be filled with <b>happiness, success, laughter</b>,
+      and countless beautiful memories. ✨<br>
+      Keep smiling, keep shining, and always be the amazing person you are! ❤️<br><br>
+      <b>Today is your day — enjoy every second of it! 🥳</b>
+    </div>
+    <button onclick="celebrate()">🎆 Celebrate!</button>
+    <button onclick="music()">🎵 Play Birthday Song</button>
+    <div style="margin-top:18px;opacity:.65;font-size:14px">Made with ❤️ specially for Raunak</div>
+  </div>
+</section>
+
+<script>
+const canvas=document.getElementById("fx"),ctx=canvas.getContext("2d");
+let W,H,particles=[];
+function resize(){W=canvas.width=innerWidth;H=canvas.height=innerHeight}
+addEventListener("resize",resize);resize();
+
+function burst(x,y){
+ for(let i=0;i<90;i++){
+  let a=Math.random()*Math.PI*2,s=2+Math.random()*7;
+  particles.push({x,y,vx:Math.cos(a)*s,vy:Math.sin(a)*s-2,life:70+Math.random()*50,size:2+Math.random()*4,hue:Math.random()*360});
+ }
+}
+function animate(){
+ ctx.clearRect(0,0,W,H); particles=particles.filter(p=>p.life>0);
+ particles.forEach(p=>{p.x+=p.vx;p.y+=p.vy;p.vy+=.08;p.life--;
+ ctx.globalAlpha=Math.max(0,p.life/100);ctx.fillStyle=`hsl(${p.hue},100%,65%)`;ctx.fillRect(p.x,p.y,p.size,p.size)});
+ ctx.globalAlpha=1;requestAnimationFrame(animate)
+}
+animate();
+
+function openGift(){
+ document.getElementById("intro").classList.add("hidden");
+ document.getElementById("main").classList.remove("hidden");
+ for(let i=0;i<8;i++)setTimeout(()=>burst(Math.random()*W,H*.12+Math.random()*H*.45),i*130);
+ window.scrollTo(0,0);
+  startSong();
+}
+function celebrate(){
+ for(let i=0;i<9;i++)setTimeout(()=>burst(Math.random()*W,H*.12+Math.random()*H*.45),i*150);
+}
+let playing=false;
+const birthdayAudio=document.getElementById("birthdayAudio");
+function startSong(){
+  birthdayAudio.volume=1.0;
+  const p=birthdayAudio.play();
+  if(p){p.then(()=>{playing=true; birthdayAudio.onended=()=>playing=false;}).catch(()=>{playing=false; alert("Tap 🎵 Play Birthday Song once to start the music.");});}
+}
+function music(){
+  if(playing){birthdayAudio.pause(); birthdayAudio.currentTime=0; playing=false;}else{startSong();}
+}
+</script>
+</body>
+</html>
